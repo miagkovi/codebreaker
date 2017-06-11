@@ -66,7 +66,6 @@ module Codebreaker
       puts "You have #{@attempts} more attempts."
       puts @hint ? 'You have a hint' : 'No hint!'
       loop do
-        puts @code
         puts 'Your guess:'
         input = gets.chomp
         if input.empty?
