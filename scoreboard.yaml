@@ -1,0 +1,29 @@
+---
+- !ruby/object:Player
+  name: ievgenii
+  turns: 5
+  code: '6515'
+- !ruby/object:Player
+  name: Cooper
+  turns: 7
+  code: '5555'
+- !ruby/object:Player
+  name: rex
+  turns: 9
+  code: '2245'
+- !ruby/object:Player
+  name: dex
+  turns: 10
+  code: '1332'
+- !ruby/object:Player
+  name: york
+  turns: 8
+  code: '4213'
+- !ruby/object:Player
+  name: Cooper
+  turns: 7
+  code: '5555'
+- !ruby/object:Player
+  name: Cooper
+  turns: 7
+  code: '5555'

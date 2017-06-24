@@ -1,7 +1,12 @@
-require "codebreaker/version"
+require_relative './codebreaker/version'
 
-require 'codebreaker/game'
+require_relative './codebreaker/code'
+require_relative './codebreaker/ui'
+require_relative './codebreaker/player'
+require_relative './codebreaker/game'
+require_relative './codebreaker/scoreboard'
+require_relative './codebreaker/string'
 
 module Codebreaker
-  VERSION = '0.0.1'
+  MAX_ATTEMPTS = 10
 end

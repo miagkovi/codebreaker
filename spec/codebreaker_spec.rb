@@ -1,59 +1,79 @@
-require "spec_helper"
+require 'spec_helper'
 
 module Codebreaker
+  RSpec.describe Code do
+    it 'creates a secret code' do
+      @code = Code.new
+      expect(@code.to_s).to match(/[1-6]{4}/)
+    end
+
+    describe '#compare_with' do
+      it 'returns `+`s and `-`s according to game rules' do
+        @code = Code.new
+        expect(@code.compare_with(@code.to_s)).to eq('++++')
+        @code.instance_variable_set('@code', '1234')
+        expect(@code.compare_with('1234')).to eq('++++')
+        expect(@code.compare_with('4321')).to eq('----')
+        expect(@code.compare_with('1111')).to eq('+')
+        expect(@code.compare_with('2222')).to eq('+')
+        expect(@code.compare_with('2121')).to eq('--')
+        expect(@code.compare_with('2545')).to eq('--')
+        expect(@code.compare_with('5234')).to eq('+++')
+        expect(@code.compare_with('6666')).to eq('')
+        expect(@code.compare_with('5134')).to eq('++-')
+      end
+    end
+  end
+
   RSpec.describe Game do
-
-    before(:each) do
-      @game = Game.new
-    end
-
-    describe '#setup' do
-      it 'creates @code instance variable' do
-        expect(@game.instance_variable_get(:@code)).not_to be_empty
-      end
-      it 'creates @hint instance variable with value = true' do
-        expect(@game.instance_variable_get(:@hint)).to eq(true)
-      end
-      it 'creates @attempts instance variable with value 10' do
-        expect(@game.instance_variable_get(:@attempts)).to eq(10)
-      end
-      it 'creates empty @result instance variable' do
-        expect(@game.instance_variable_get(:@result)).to eq('')
-      end
-    end
-
-    describe '#create_code' do
-      it 'creates 4 digits code with digits from 1 to 6' do
-        expect(@game.send(:create_code)).to match(/[1-6]{4}/)
+    describe '#start' do
+      it 'saves secret code in @code' do
+        @game = Game.new
+        @game.start
+        expect(@game.instance_variable_get(:@code).to_s).to match(/[1-6]{4}/)
       end
     end
 
     describe '#use_hint' do
-      it 'show one from @code' do
-        expect(@game.send(:use_hint).length).to eq(1)
+      it 'returns one digit from code' do
+        @game = Game.new
+        @game.start
+        expect(@game.use_hint).to match(/[1-6]{1}/)
       end
 
-      it 'show one digit from @code' do
-        expect(@game.send(:use_hint)).to match(/[1-6]+/)
-      end
-
-      it 'change @hint to false' do
-        @game.send(:use_hint)
+      it 'changes @hint to false' do
+        @game = Game.new
+        @game.start
+        @game.use_hint
         expect(@game.instance_variable_get(:@hint)).to eq(false)
       end
     end
+  end
 
-    describe '#compare' do
-      it 'compare codes and return +`s and -`s ' do
-        expect(@game.send(:compare, '1234', '5666')).to eq('No maches....')
-        expect(@game.send(:compare, '1234', '6654')).to eq('+')
-        expect(@game.send(:compare, '1234', '6653')).to eq('-')
-        expect(@game.send(:compare, '1234', '1234')).to eq('++++')
-        expect(@game.send(:compare, '1234', '4321')).to eq('----')
-        expect(@game.send(:compare, '1111', '4121')).to eq('++')
-        expect(@game.send(:compare, '1214', '2324')).to eq('+--')
+  RSpec.describe Player do
+    describe '#to_s' do
+      it 'returns formatted player data' do
+        @player = Player.new('Ruby', 5, '1234')
+        expect(@player.to_s).to eq('Player: Ruby | Turns: 5 | Code: 1234')
+      end
+    end
+  end
+
+  RSpec.describe Scoreboard do
+    describe '#save_scores' do
+      it 'creates `scoreboard.yaml`' do
+        @player = Player.new('Cooper', 7, '5555')
+        @scoreboard = Scoreboard.new
+        @scoreboard.save_scores(@player)
+        expect(File.exist?('scoreboard.yaml')).to eq(true)
       end
     end
 
+    describe '#get_scores' do
+      it 'gets data from `scoreboard.yaml`' do
+        @scoreboard = Scoreboard.new
+        expect(@scoreboard.get_scores.class).to eq(Array)
+      end
+    end
   end
 end
